@@ -78,13 +78,18 @@ input.err-inp{border-color:var(--danger)!important;background:#fff5f5!important;
 /* ── PAYMENT STATUS ── */
 .pay-status-section{background:linear-gradient(90deg,var(--orangeBg),#FFF9F0);border:2px solid var(--orange);border-radius:10px;padding:14px 16px;margin-bottom:14px;}
 .pay-status-title{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:700;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
-/* 3-button payment toggle */
 .pay-tgl{display:flex;border:2px solid var(--orange);border-radius:8px;overflow:hidden;}
 .pay-tgl button{flex:1;padding:11px 4px;border:none;border-right:1px solid rgba(230,126,34,0.3);font-size:12.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--muted);background:#FFF9F5;transition:all .15s;line-height:1.3;}
 .pay-tgl button:last-child{border-right:none;}
 .pay-tgl button.on.purchased{background:linear-gradient(135deg,var(--success),#27AE60);color:#fff;}
 .pay-tgl button.on.advance{background:linear-gradient(135deg,var(--orange),#F39C12);color:#fff;}
 .pay-tgl button.on.order{background:linear-gradient(135deg,var(--green),#27AE60);color:#fff;}
+
+/* ── PHOTO SIZE WARNING ── */
+.photo-warn{display:none;color:var(--orange);font-size:10.5px;font-weight:700;margin-top:4px;padding:4px 8px;background:var(--orangeBg);border-radius:5px;border:1px solid var(--orange);}
+.photo-warn.show{display:block;}
+.photo-ok{display:none;color:var(--success);font-size:10.5px;font-weight:700;margin-top:4px;}
+.photo-ok.show{display:block;}
 
 /* ── SUCCESS BADGE ── */
 .ss-status{display:inline-block;padding:5px 18px;border-radius:20px;font-weight:700;font-size:12px;letter-spacing:2px;margin:6px 0;}
@@ -109,6 +114,13 @@ input[type="file"]{position:absolute;width:1px;height:1px;opacity:0;pointer-even
 .init-banner.hide{display:none;}
 .spin{display:inline-block;animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── SUBMIT PROGRESS ── */
+.submit-progress{display:none;background:var(--purpleP);border:1.5px solid var(--purpleL);border-radius:10px;padding:14px 16px;margin-bottom:14px;text-align:center;}
+.submit-progress.show{display:block;}
+.submit-progress p{font-size:13px;color:var(--purple);font-weight:600;margin-bottom:8px;}
+.progress-bar-wrap{background:var(--border);border-radius:10px;height:8px;overflow:hidden;}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--purple),var(--purpleL));border-radius:10px;transition:width 0.4s ease;}
 
 /* ── SUBMIT BAR ── */
 .sbar{position:sticky;bottom:0;background:linear-gradient(to top,#FDFCFF 65%,transparent);padding:14px 0 10px;}
@@ -210,9 +222,7 @@ input[type="file"]{position:absolute;width:1px;height:1px;opacity:0;pointer-even
   </div>
 </header>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- PAGE 1: DSR ENTRY FORM                     -->
-<!-- ══════════════════════════════════════════ -->
+<!-- PAGE 1: DSR ENTRY FORM -->
 <div class="page active" id="page-dsr">
 <div class="wrap">
 
@@ -260,7 +270,7 @@ input[type="file"]{position:absolute;width:1px;height:1px;opacity:0;pointer-even
     </div>
   </div>
 
-  <!-- Payment Status — 3 buttons now -->
+  <!-- Payment Status -->
   <div class="pay-status-section">
     <div class="pay-status-title">💰 &nbsp;Payment Status <span class="req">★</span></div>
     <div class="pay-tgl" id="payTgl">
@@ -275,6 +285,15 @@ input[type="file"]{position:absolute;width:1px;height:1px;opacity:0;pointer-even
   <div id="entriesList"></div>
   <button class="add-entry-btn" onclick="addEntry()">＋ &nbsp; Add Another Item</button>
 
+  <!-- Submit Progress Bar -->
+  <div class="submit-progress" id="submitProgress">
+    <p id="submitProgressMsg">⏳ Saving data...</p>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;" id="submitProgressSub">Please wait, do not close this page</p>
+  </div>
+
   <div class="spacer"></div>
   <div class="sbar">
     <button class="sbtn" id="subBtn" onclick="doSubmit()">★ &nbsp; Submit DSR &nbsp; ★</button>
@@ -282,62 +301,44 @@ input[type="file"]{position:absolute;width:1px;height:1px;opacity:0;pointer-even
 </div>
 </div><!-- end page-dsr -->
 
-<!-- ══════════════════════════════════════════ -->
-<!-- PAGE 2: UPDATE PAYMENT STATUS              -->
-<!-- ══════════════════════════════════════════ -->
+<!-- PAGE 2: UPDATE PAYMENT STATUS -->
 <div class="page" id="page-update">
 <div class="wrap">
 
-  <div class="howto">
-    <div class="howto-title">📋 How to Update Payment Status</div>
-    <ol>
-      <li>Use this page when a customer comes and makes full payment</li>
-      <li>Enter the DSR ID and click Search (e.g. VSR-20260401-003)</li>
-      <li>Verify the entry details and select the new payment status</li>
-      <li>Click Confirm — the Sheet will be updated accordingly</li>
-    </ol>
-  </div>
-
-  <!-- DSR Search -->
   <div class="upd-section">
-    <div class="upd-title">🔍 &nbsp;Search DSR Entry</div>
-    <div class="dsr-search-row">
-      <div style="flex:1;">
-        <label>DSR ID <span class="req">★</span></label>
-        <input type="text" id="searchDsrId" placeholder="e.g. VSR-20260401-003" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')doSearch()" />
-      </div>
-      <div>
-        <label>&nbsp;</label>
-        <button class="search-btn" id="searchBtn" onclick="doSearch()">🔍 &nbsp;Search</button>
-      </div>
+    <div class="upd-title">🔄 &nbsp;Update Payment Status</div>
+    <div class="howto">
+      <div class="howto-title">📋 How to Use</div>
+      <ol>
+        <li>DSR ID enter చేయండి (e.g. 30-20260418-001)</li>
+        <li>Search click చేయండి</li>
+        <li>New payment status select చేయండి</li>
+        <li>Confirm click చేయండి</li>
+      </ol>
     </div>
+    <label>DSR ID <span class="req">★</span></label>
+    <div class="dsr-search-row">
+      <input type="text" id="searchDsrId" placeholder="e.g. 30-20260418-001" style="text-transform:uppercase;" />
+      <button class="search-btn" id="searchBtn" onclick="doSearch()">🔍 &nbsp;Search</button>
+    </div>
+    <div class="no-result-msg" id="noResultMsg">❌ DSR ID కనపడలేదు. Check చేసి మళ్ళీ try చేయండి.</div>
   </div>
 
-  <!-- No result message -->
-  <div class="no-result-msg" id="noResultMsg">⚠ DSR ID not found. Please check and try again.</div>
-
-  <!-- Entry Details + Status Update (shown after search) -->
   <div id="updEntryCard" style="display:none;">
-
     <div class="entry-card">
       <div class="ec-header">
-        <div>
-          <div style="font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">DSR ID</div>
-          <div class="ec-dsr" id="ecDsrId">—</div>
-        </div>
-        <div id="ecCurrentBadge"></div>
+        <span class="ec-dsr" id="ecDsrId">—</span>
+        <span id="ecCurrentBadge"></span>
       </div>
       <div class="ec-body" id="ecBody"></div>
     </div>
 
-    <!-- Status Update Box -->
     <div class="status-update-box">
-      <div class="sut-label">🔄 Update Payment Status</div>
-
+      <div class="sut-label">New Status Select చేయండి</div>
       <div class="pay-tgl4" id="updTgl">
         <button id="ut-purchased" onclick="setUpdStatus('Purchased',this)"    class="t-purchased">✅ Purchased</button>
         <button id="ut-advance"   onclick="setUpdStatus('Advance',this)"      class="t-advance">⏳ Advance</button>
-        <button id="ut-order"     onclick="setUpdStatus('Order Placed',this)" class="t-order">📦 Order Placed</button>
+        <button id="ut-order"     onclick="setUpdStatus('Order Placed',this)" class="t-order">📦 Order</button>
         <button id="ut-other"     onclick="setUpdStatus('Other',this)"        class="t-other">✏️ Other</button>
       </div>
       <input type="hidden" id="updStatus" value="" />
@@ -383,6 +384,16 @@ input[type="file"]{position:absolute;width:1px;height:1px;opacity:0;pointer-even
 // ══════════════════════════════════════════════════════════════
 var GAS_URL = "https://script.google.com/macros/s/AKfycbyQYlRVmQGIA1YfiExsNUyoSFUpWA4iBnhI0UhAdGzbi7V3lSYtV1FBk_85mVqvo0dQ/exec";
 // ══════════════════════════════════════════════════════════════
+
+// ────────────────────────────────────────────────────────────
+// PHOTO COMPRESSION SETTINGS
+// MAX_DIM: 800px (was 1400) — photo చిన్నగా ఉంటుంది
+// QUALITY: 0.65 (was 0.82) — file size తగ్గుతుంది
+// TARGET: ~150KB max per photo — GAS timeout రాదు
+// ────────────────────────────────────────────────────────────
+var PHOTO_MAX_DIM = 800;
+var PHOTO_QUALITY = 0.65;
+var PHOTO_MAX_KB  = 200; // 200KB limit
 
 var GOLD_PRODS   = [];
 var SILVER_PRODS = [];
@@ -443,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
   loadInitialData();
 });
 
-// ── PAYMENT STATUS TOGGLE (3-button DSR form) ──
+// ── PAYMENT STATUS TOGGLE ──
 function setPayStatus(val, btn) {
   document.getElementById('payTgl').querySelectorAll('button').forEach(function(b){
     b.classList.remove('on','advance','purchased','order');
@@ -474,8 +485,9 @@ function chkMob(inp) {
   }
 }
 
-// ── PHOTO COMPRESS + PREVIEW ──
-function loadPhoto(inp, hidId, tidId, pidId, szId) {
+// ── PHOTO COMPRESS + PREVIEW (OPTIMIZED) ──
+// Photo size తగ్గించడం వల్ల GAS timeout రాదు
+function loadPhoto(inp, hidId, tidId, pidId, szId, warnId) {
   var f = inp.files[0];
   if (!f) return;
   var tEl = document.getElementById(tidId);
@@ -485,19 +497,47 @@ function loadPhoto(inp, hidId, tidId, pidId, szId) {
     var img = new Image();
     img.onload = function() {
       var canvas = document.createElement('canvas');
-      var MAX=1400, w=img.width, h=img.height;
-      if (w>MAX){ h=Math.round(h*MAX/w); w=MAX; }
-      if (h>MAX){ w=Math.round(w*MAX/h); h=MAX; }
-      canvas.width=w; canvas.height=h;
-      canvas.getContext('2d').drawImage(img,0,0,w,h);
-      var b64 = canvas.toDataURL('image/jpeg',0.82);
+      var MAX = PHOTO_MAX_DIM;
+      var w = img.width, h = img.height;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+      // Quality ని auto-adjust చేస్తాం — size limit దాటకుండా
+      var b64 = canvas.toDataURL('image/jpeg', PHOTO_QUALITY);
+      var sizeKB = Math.round(b64.length * 0.75 / 1024);
+
+      // Still too large? Further reduce
+      if (sizeKB > PHOTO_MAX_KB) {
+        var reducedQ = PHOTO_QUALITY * (PHOTO_MAX_KB / sizeKB) * 0.9;
+        reducedQ = Math.max(0.3, Math.min(reducedQ, PHOTO_QUALITY));
+        b64 = canvas.toDataURL('image/jpeg', reducedQ);
+        sizeKB = Math.round(b64.length * 0.75 / 1024);
+      }
+
       document.getElementById(hidId).value = b64;
-      var sizeKB = Math.round(b64.length*0.75/1024);
-      if (tEl){ tEl.textContent=f.name; tEl.className='phn'; }
-      var szEl=document.getElementById(szId);
-      if (szEl) szEl.textContent = sizeKB>1024?(sizeKB/1024).toFixed(1)+' MB':sizeKB+' KB';
-      var pv=document.getElementById(pidId);
-      if (pv){ pv.src=b64; pv.classList.add('show'); }
+
+      if (tEl) { tEl.textContent = f.name; tEl.className = 'phn'; }
+      var szEl = document.getElementById(szId);
+      if (szEl) szEl.textContent = sizeKB > 1024 ? (sizeKB/1024).toFixed(1)+' MB' : sizeKB+' KB';
+
+      // Size warning
+      if (warnId) {
+        var wEl = document.getElementById(warnId);
+        if (wEl) {
+          if (sizeKB > PHOTO_MAX_KB) {
+            wEl.textContent = '⚠ Photo size: ' + sizeKB + 'KB — upload slow అవుతుంది';
+            wEl.className = 'photo-warn show';
+          } else {
+            wEl.textContent = '✓ Photo ready: ' + sizeKB + 'KB';
+            wEl.className = 'photo-ok show';
+          }
+        }
+      }
+
+      var pv = document.getElementById(pidId);
+      if (pv) { pv.src = b64; pv.classList.add('show'); }
     };
     img.src = ev.target.result;
   };
@@ -527,18 +567,20 @@ function toggleOtherSilver(eid) {
     document.getElementById('sn-'+eid).value==='Other' ? 'block' : 'none';
 }
 
-// ── PHOTO WIDGET ──
+// ── PHOTO WIDGET (updated with warnId) ──
 function photoWidget(eid, pfx) {
-  var hid=pfx+'hh-'+eid, tid=pfx+'ht-'+eid, pid=pfx+'hp-'+eid, fid=pfx+'hf-'+eid, sid=pfx+'hs-'+eid;
+  var hid=pfx+'hh-'+eid, tid=pfx+'ht-'+eid, pid=pfx+'hp-'+eid,
+      fid=pfx+'hf-'+eid, sid=pfx+'hs-'+eid, wid=pfx+'hw-'+eid;
   return '<div class="phwrap">'+
     '<label class="phlbl" for="'+fid+'">'+
     '<span class="phi">📷</span>'+
     '<span id="'+tid+'" class="pht">Upload Photo</span>'+
     '</label>'+
     '<input type="file" id="'+fid+'" accept="image/*" '+
-    'onchange="loadPhoto(this,\''+hid+'\',\''+tid+'\',\''+pid+'\',\''+sid+'\')" />'+
+    'onchange="loadPhoto(this,\''+hid+'\',\''+tid+'\',\''+pid+'\',\''+sid+'\',\''+wid+'\')" />'+
     '<input type="hidden" id="'+hid+'" />'+
     '<div id="'+sid+'" class="ph-size"></div>'+
+    '<div id="'+wid+'"></div>'+
     '<img id="'+pid+'" class="phprev" />'+
     '</div>';
 }
@@ -559,8 +601,6 @@ function addEntry() {
   var div = document.createElement('div');
   div.className='entry'; div.id='entry-'+eid;
 
-  // FOR ORDER PLACED: No Tag Status, Tag No, Photo (optional)
-  // FOR OTHERS: Full gold details with Tag Status, Tag No, Photo
   var goldSection = '';
   if (!isOrder) {
     goldSection = '<div id="goldP-'+eid+'">'+
@@ -595,7 +635,6 @@ function addEntry() {
       '</div>'+
     '</div>';
   } else {
-    // ORDER PLACED: All fields but with optional (no ★) for Tag/Design/Tunch/Weight
     goldSection = '<div id="goldP-'+eid+'">'+
       '<div class="card" style="margin:10px 14px 14px;">'+
         '<div class="ch">◈ &nbsp;Gold Item Details</div>'+
@@ -699,6 +738,13 @@ function notify(msg, type) {
   setTimeout(function(){ t.classList.remove('show'); }, 4500);
 }
 
+// ── PROGRESS BAR ──
+function setProgress(pct, msg, sub) {
+  document.getElementById('progressBar').style.width = pct + '%';
+  if (msg) document.getElementById('submitProgressMsg').textContent = msg;
+  if (sub) document.getElementById('submitProgressSub').textContent = sub;
+}
+
 // ── SUBMIT DSR ──
 function doSubmit() {
   var date=gv('billDate'), cust=gv('custName'), mob=gv('mobNum'),
@@ -739,9 +785,6 @@ function doSubmit() {
       var des=gv('des-'+eid), tch=gv('tch-'+eid), wt=gv('wt-'+eid),
           ts=gv('tgSt-'+eid), tn=gv('tgNo-'+eid);
       if (!pn){  ok=false; errMsg='Please select/enter Product Name!'; return; }
-      // For Order Placed — everything except Product Name is optional
-      // For Purchased/Advance — all fields required
-      var isOrder = (payStatus === 'Order Placed');
       if (!isOrder) {
         if (!des){ ok=false; errMsg='Please enter Design!'; return; }
         if (!tch){ ok=false; errMsg='Please select Tunch!'; return; }
@@ -759,40 +802,79 @@ function doSubmit() {
   if (!ok){ notify(errMsg,'err'); return; }
   if (!rows.length){ notify('No data to submit!','err'); return; }
 
-  var btn=document.getElementById('subBtn');
-  btn.disabled=true;
-  btn.innerHTML='⏳ &nbsp; Saving...';
+  // Check photo sizes
+  var totalPhotoKB = 0;
+  rows.forEach(function(r) {
+    if (r.photo) totalPhotoKB += Math.round(r.photo.length * 0.75 / 1024);
+    if (r.silverItemPhoto) totalPhotoKB += Math.round(r.silverItemPhoto.length * 0.75 / 1024);
+  });
 
-  fetch(GAS_URL, { method:'POST', body:JSON.stringify({rows:rows}) })
+  var btn = document.getElementById('subBtn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ &nbsp; Saving...';
+
+  // Show progress
+  document.getElementById('submitProgress').classList.add('show');
+  setProgress(10, '⏳ Connecting to server...', 'Please wait, do not close this page');
+
+  // Animate progress bar while waiting
+  var progInt = null;
+  var currentProg = 10;
+  progInt = setInterval(function() {
+    if (currentProg < 85) {
+      currentProg += 3;
+      if (currentProg > 30 && currentProg < 60) {
+        setProgress(currentProg, '📸 Uploading photo to Drive...');
+      } else if (currentProg >= 60) {
+        setProgress(currentProg, '💾 Saving to Sheet...');
+      } else {
+        setProgress(currentProg, '⏳ Processing...');
+      }
+    }
+  }, 800);
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    body: JSON.stringify({ rows: rows })
+  })
     .then(function(res){ return res.json(); })
     .then(function(result){
-      btn.disabled=false;
-      btn.innerHTML='★ &nbsp; Submit DSR &nbsp; ★';
-      if (result.status==='success') {
-        document.getElementById('ssId').textContent = result.dsrId||'—';
+      clearInterval(progInt);
+      setProgress(100, '✅ Done!');
+      setTimeout(function() {
+        document.getElementById('submitProgress').classList.remove('show');
+      }, 1000);
 
-        var badge    = document.getElementById('ssStatusBadge');
-        var ps       = result.paymentStatus || 'Purchased';
-        var isAdv    = ps === 'Advance';
-        var isOrder  = ps === 'Order Placed';
-        var bClass   = isAdv ? 'advance' : isOrder ? 'order' : 'purchased';
-        var bLabel   = isAdv ? '⏳ ADVANCE' : isOrder ? '📦 ORDER PLACED' : '✅ PURCHASED';
+      btn.disabled = false;
+      btn.innerHTML = '★ &nbsp; Submit DSR &nbsp; ★';
+
+      if (result.status === 'success') {
+        document.getElementById('ssId').textContent = result.dsrId || '—';
+
+        var badge  = document.getElementById('ssStatusBadge');
+        var ps     = result.paymentStatus || 'Purchased';
+        var isAdv  = ps === 'Advance';
+        var isOrd  = ps === 'Order Placed';
+        var bClass = isAdv ? 'advance' : isOrd ? 'order' : 'purchased';
+        var bLabel = isAdv ? '⏳ ADVANCE' : isOrd ? '📦 ORDER PLACED' : '✅ PURCHASED';
         badge.innerHTML = '<div class="ss-status '+bClass+'">'+bLabel+'</div>';
 
         var subNote = (result.savedCount||rows.length)+' item(s) saved  •  Email sent';
-        if (isAdv)   subNote += '  •  Advance sheet updated';
-        if (isOrder) subNote += '  •  Order Placed sheet updated';
+        if (isAdv) subNote += '  •  Advance sheet updated';
+        if (isOrd) subNote += '  •  Order Placed sheet updated';
         document.getElementById('ssSub').textContent = subNote;
 
         document.getElementById('successScreen').classList.add('show');
       } else {
-        notify('Error: '+(result.message||'Unknown error'),'err');
+        notify('Error: '+(result.message||'Unknown error'), 'err');
       }
     })
     .catch(function(err){
-      btn.disabled=false;
-      btn.innerHTML='★ &nbsp; Submit DSR &nbsp; ★';
-      notify('Network error: '+err,'err');
+      clearInterval(progInt);
+      document.getElementById('submitProgress').classList.remove('show');
+      btn.disabled = false;
+      btn.innerHTML = '★ &nbsp; Submit DSR &nbsp; ★';
+      notify('Network error: '+err, 'err');
     });
 }
 
@@ -868,7 +950,6 @@ function renderEntryCard(d) {
     return '<div class="info-row"><span class="ir-lbl">'+r[0]+'</span><span class="ir-val">'+r[1]+'</span></div>';
   }).join('');
 
-  // Pre-select opposite of current
   if (cs==='Advance' || cs==='Order Placed') {
     setUpdStatus('Purchased', document.getElementById('ut-purchased'));
   } else {
