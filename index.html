@@ -778,7 +778,7 @@ function doSubmit() {
       rows.push({
         employeeName:emp,billDate:date,customerName:cust,mobileNumber:mob,address:addr,paymentStatus:payStatus,
         type:type,productFrom:pf,tagStatus:'',tagNo:'',productName:'',design:'',tunch:'',weight:'',photo:'',
-        silverItemName:sn,silverItemWeight:sw,silverItemPhoto:gv('shh-'+eid)
+        silverItemName:sn,silverItemWeight:sw,silverItemPhoto:''
       });
     } else {
       var pn=gv('pn-'+eid); if(pn==='Other') pn=gv('pnCustom-'+eid);
@@ -794,20 +794,13 @@ function doSubmit() {
       rows.push({
         employeeName:emp,billDate:date,customerName:cust,mobileNumber:mob,address:addr,paymentStatus:payStatus,
         type:type,productFrom:pf,tagStatus:ts||'',tagNo:tn||'',productName:pn,design:des||'',tunch:tch||'',weight:wt||'',
-        photo:gv('phh-'+eid),silverItemName:'',silverItemWeight:'',silverItemPhoto:''
+        photo:'',silverItemName:'',silverItemWeight:'',silverItemPhoto:''
       });
     }
   });
 
   if (!ok){ notify(errMsg,'err'); return; }
   if (!rows.length){ notify('No data to submit!','err'); return; }
-
-  // Check photo sizes
-  var totalPhotoKB = 0;
-  rows.forEach(function(r) {
-    if (r.photo) totalPhotoKB += Math.round(r.photo.length * 0.75 / 1024);
-    if (r.silverItemPhoto) totalPhotoKB += Math.round(r.silverItemPhoto.length * 0.75 / 1024);
-  });
 
   var btn = document.getElementById('subBtn');
   btn.disabled = true;
