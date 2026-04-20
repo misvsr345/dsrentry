@@ -382,7 +382,7 @@ input[type="file"]{position:absolute;width:1px;height:1px;opacity:0;pointer-even
 // ══════════════════════════════════════════════════════════════
 // ▶▶ STEP 1: Update GAS Deployed Web App URL here ◀◀
 // ══════════════════════════════════════════════════════════════
-var GAS_URL = "https://script.google.com/macros/s/AKfycbyQYlRVmQGIA1YfiExsNUyoSFUpWA4iBnhI0UhAdGzbi7V3lSYtV1FBk_85mVqvo0dQ/exec";
+var GAS_URL = "https://script.google.com/macros/s/AKfycbxFWBge6U6eDVoLehy0IwhEx3GSU7pk6RROwMTo-ikVQRpK-05ZDkr5No_msNAflG0/exec";
 // ══════════════════════════════════════════════════════════════
 
 // ────────────────────────────────────────────────────────────
@@ -775,10 +775,12 @@ function doSubmit() {
       var sw=gv('sw-'+eid);
       if (!sn){ ok=false; errMsg='Please select Silver Item!'; return; }
       if (!sw){ ok=false; errMsg='Please enter Silver Weight!'; return; }
+      var sPhotoEl = document.getElementById('shh-'+eid);
+      var sPhotoB64 = (sPhotoEl && sPhotoEl.value && sPhotoEl.value.length > 100) ? sPhotoEl.value : '';
       rows.push({
         employeeName:emp,billDate:date,customerName:cust,mobileNumber:mob,address:addr,paymentStatus:payStatus,
         type:type,productFrom:pf,tagStatus:'',tagNo:'',productName:'',design:'',tunch:'',weight:'',photo:'',
-        silverItemName:sn,silverItemWeight:sw,silverItemPhoto:''
+        silverItemName:sn,silverItemWeight:sw,silverItemPhoto:sPhotoB64
       });
     } else {
       var pn=gv('pn-'+eid); if(pn==='Other') pn=gv('pnCustom-'+eid);
@@ -791,10 +793,12 @@ function doSubmit() {
         if (!wt){  ok=false; errMsg='Please enter Weight!'; return; }
         if (ts==='Tag'&&!tn){ ok=false; errMsg='Please enter Tag No!'; return; }
       }
+      var gPhotoEl = document.getElementById('phh-'+eid);
+      var gPhotoB64 = (gPhotoEl && gPhotoEl.value && gPhotoEl.value.length > 100) ? gPhotoEl.value : '';
       rows.push({
         employeeName:emp,billDate:date,customerName:cust,mobileNumber:mob,address:addr,paymentStatus:payStatus,
         type:type,productFrom:pf,tagStatus:ts||'',tagNo:tn||'',productName:pn,design:des||'',tunch:tch||'',weight:wt||'',
-        photo:'',silverItemName:'',silverItemWeight:'',silverItemPhoto:''
+        photo:gPhotoB64,silverItemName:'',silverItemWeight:'',silverItemPhoto:''
       });
     }
   });
